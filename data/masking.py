@@ -2,6 +2,11 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
+"""
+In this python script, you'll find the masking functions used to simulate the different 
+types of missing data on the processed CSVs. Randomness is reproducible via the given seed 
+"""
+
 # ---
 # Masking functions (MCAR, MAR, MNAR_logit, MNAR_quantile)
 
@@ -102,7 +107,7 @@ def mask_mnar_quantile(X, overall_p=0.30, rng=None, frac_cols=0.30,
     return M
 
 # --- 
-# Creating and storing multiple iterations of masked datasets
+# Creating and storing masked datasets (30 for each mechanism)
 
 def save_mask_npz(dataset, mech, mask, meta, seed):
     outdir = Path("data/masks")/dataset/mech
@@ -145,9 +150,5 @@ def generate_masks_for_dataset(dataset_name, csv_path, seeds_base=42, p=0.30):
                                frac_cols=0.30, lower_q=0.25, upper_q=0.75)
         save_mask_npz(dataset_name, "MNAR_quant", M,
                       {"p": p, "lower_q": 0.25, "upper_q": 0.75}, seed)
-        
-generate_masks_for_dataset("parkinsons", "data/processed/parkinsons.data")
-generate_masks_for_dataset("transfusion", "data/processed/transfusion.data")
-generate_masks_for_dataset("breast_cancer", "data/processed/wdbc.data")
 
 # ---
