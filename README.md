@@ -34,4 +34,4 @@ OT-PMM seems to provide substantial gains in performance over PMM on datasets wi
 # 
 
 Notes:
-Optimal Transport matching is model agnositc. It's not limited to MICE runs that use OLS for the conditional model; tree based learners and other regressors can also in theory benefit from OT in the matching stage.
+Optimal Transport matching is model agnositc, it's not limited to MICE runs that use OLS for the conditional model. Tree based learners and other regressors can also in theory benefit from OT in the matching stage.
