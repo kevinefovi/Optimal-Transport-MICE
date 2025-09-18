@@ -1,4 +1,3 @@
-# src/OT_PMM.py
 from __future__ import annotations
 import numpy as np
 import pandas as pd
@@ -62,10 +61,7 @@ def ot_pmm_impute_transductive_ols(
     top_k: int = 64,
     alpha: float = 1.0,
     beta: float = 0.25,
-    barycentric: bool = True,
     init_noise: float = 0.0,
-    cond_model: Literal["ols", "ridge"] = "ols",
-    ridge_alpha: float = 1.0,
     random_state: int = 42,
 ) -> pd.DataFrame:
     if not isinstance(X_df, pd.DataFrame):
@@ -79,13 +75,14 @@ def ot_pmm_impute_transductive_ols(
 
     n, d = X.shape
     top_k = _cap(top_k, n)
-    alpha = float(max(0.0, alpha)); beta = float(max(0.0, beta))
+    alpha = float(max(0.0, alpha))
+    beta = float(max(0.0, beta))
 
     for _ in range(int(sweeps)):
         for j in range(d):
             obs = ~M[:, j]
             mis = M[:, j]
-            idx_mis = np.flatnonzero(mis)         # <-- integer indices for safe assignment
+            idx_mis = np.flatnonzero(mis)
             n_obs, n_mis = int(obs.sum()), idx_mis.size
             if n_mis == 0 or n_obs < 5:
                 continue
@@ -94,11 +91,9 @@ def ot_pmm_impute_transductive_ols(
             X_mis_pred = np.delete(X[mis, :], j, axis=1)
             y_obs = X[obs, j]
 
-            if cond_model == "ridge":
-                est = Ridge(alpha=float(ridge_alpha), random_state=random_state)
-            else:
-                est = LinearRegression()
+            est = LinearRegression()
             est.fit(X_obs_pred, y_obs)
+
             yhat_obs = est.predict(X_obs_pred)
             yhat_mis = est.predict(X_mis_pred)
 
@@ -123,11 +118,8 @@ def ot_pmm_impute_transductive_ols(
             for r_idx, i in enumerate(idx_mis):
                 gap_all = np.abs(yhat_mis[r_idx] - yhat_obs)
 
-                if k_like is not None:
-                    k_eff = _cap(k_like, n_obs)
-                    idx_gap = np.argpartition(gap_all, k_eff - 1)[:k_eff]
-                else:
-                    idx_gap = np.arange(n_obs)
+                k_eff = _cap(k_like, n_obs)
+                idx_gap = np.argpartition(gap_all, k_eff - 1)[:k_eff]
 
                 gap = gap_all[idx_gap]
                 gap_scaled = gap / _pos_scale(gap)
@@ -149,9 +141,6 @@ def ot_pmm_impute_transductive_ols(
 
                 w = _row_weights(cost_slice, temp="auto")
 
-                if barycentric:
-                    X[i, j] = float(np.dot(w, y_obs[donors]))       # <-- write to X[i, j]
-                else:
-                    X[i, j] = float(y_obs[rng.choice(donors, p=w)]) # <-- write to X[i, j]
+                X[i, j] = float(y_obs[rng.choice(donors, p=w)])
 
     return pd.DataFrame(X, columns=cols, index=idx)
