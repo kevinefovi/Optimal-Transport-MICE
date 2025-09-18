@@ -7,8 +7,8 @@ import pandas as pd
 from baseline_PMM import statsmodels_pmm_impute_ols
 from OT_PMM import ot_pmm_impute_transductive_ols
 
-datasets   = ["parkinsons", "transfusion", "breast_cancer"]
-mechanisms = ["MCAR", "MAR", "MNAR"]
+datasets   = ["transfusion", "parkinsons", "breast_cancer"]
+mechanisms = ["MCAR", "MAR", "MNAR_quant"]
 
 # parameters that OT_PMM shares with normal PMM are equal for a fair comparison
 otp = dict(
@@ -17,8 +17,8 @@ otp = dict(
     beta=0.10,         # small multivariate weight
     k_like=5,          # same k as PMM
     top_k=5,           # same donor pool size as PMM
-    alpha=2.0,         # keep |yhat gap| dominant over multivariate weight
-    init_noise=0.0,    # match statsmodels mean init
+    alpha=2.0,         # keepng gap dominant (balance between alpha and beta)
+    init_noise=0.0,   
 )
 
 def iter_masks(dataset: str, mechanism: str):
@@ -51,14 +51,11 @@ def rmse_mae(X_true: np.ndarray, X_imp: np.ndarray, M: np.ndarray):
 # main
 def run():
     results = []
+
     for dataset in datasets:
         X_df_full = pd.read_csv(f"data/processed/{dataset}.data")
 
-        print(f"\n================ {dataset} ================")
         for mech in mechanisms:
-            rmses_pmm, maes_pmm = [], []
-            rmses_otp, maes_otp = [], []
-
             any_masks = False
             for seed, M in iter_masks(dataset, mech):
                 any_masks = True
@@ -74,15 +71,14 @@ def run():
                     X_df, M_run, iters=5, k_pmm=5, seed=seed
                 )
                 rmse_p, mae_p = rmse_mae(X_true, X_pmm_df.to_numpy(), M_run)
-                rmses_pmm.append(rmse_p); maes_pmm.append(mae_p)
 
                 # OT PMM
                 X_otp_df = ot_pmm_impute_transductive_ols(
                     X_df, M_run, random_state=seed, **otp
                 )
                 rmse_o, mae_o = rmse_mae(X_true, X_otp_df.to_numpy(), M_run)
-                rmses_otp.append(rmse_o); maes_otp.append(mae_o)
 
+                # building data for dataframe
                 results += [
                     dict(ds=dataset, mech=mech, seed=seed, method="PMM", metric="RMSE", value=rmse_p),
                     dict(ds=dataset, mech=mech, seed=seed, method="PMM", metric="MAE", value=mae_p),
@@ -90,17 +86,9 @@ def run():
                     dict(ds=dataset, mech=mech, seed=seed, method="OT_PMM", metric="MAE", value=mae_o)
                 ]
 
-            rp_m, rp_s = np.mean(rmses_pmm), np.std(rmses_pmm, ddof=1)
-            mp_m, mp_s = np.mean(maes_pmm),  np.std(maes_pmm,  ddof=1)
-            ro_m, ro_s = np.mean(rmses_otp), np.std(rmses_otp, ddof=1)
-            mo_m, mo_s = np.mean(maes_otp),  np.std(maes_otp,  ddof=1)
-
-            print(f"\nMechanism: {mech}")
-            print(f"  PMM(OLS)         RMSE: {rp_m:.4f} ± {rp_s:.4f}   MAE: {mp_m:.4f} ± {mp_s:.4f}   (n={len(rmses_pmm)})")
-            print(f"  OT-PMM(OLS,fair) RMSE: {ro_m:.4f} ± {ro_s:.4f}   MAE: {mo_m:.4f} ± {mo_s:.4f}   (n={len(rmses_otp)})")
     return results
 
 if __name__ == "__main__":
     res = run()
     df = pd.DataFrame(res)
-    df.to_csv("data/test.csv")
+    df.to_csv("data/results/raw_results.csv")
