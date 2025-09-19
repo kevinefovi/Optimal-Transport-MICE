@@ -13,7 +13,7 @@ For the data, we used 3 datasets with varying ratios of features to instances fr
 
 To assess the predictive power of PMM and OT-PMM, we used both MAE and RMSE.
 
-To simulate missing data, we defined Missing Completely at Random (MCAR), Missing at Random (MAR) and Missing not at Random (MNAR, quantile) functions and created 30 masks for each dataset (aiming at around 30% missing data)
+To simulate missing data, we defined Missing Completely at Random (MCAR), Missing at Random (MAR) and Missing not at Random (MNAR, quantile) functions and generated 30 masks under each mechanism for each dataset (aiming at around 30% missing data)
 
 #
 
@@ -34,4 +34,4 @@ OT-PMM seems to provide substantial gains in performance over PMM on datasets wi
 # 
 
 Notes:
-Optimal Transport matching is model agnositc, it's not limited to MICE runs that use OLS for the conditional model. Tree based learners and other regressors can also in theory benefit from OT in the matching stage.
+Optimal Transport matching is not limited to MICE runs that use OLS for the conditional model, tree based learners and other regressors can also in theory benefit from OT in the matching stage.
