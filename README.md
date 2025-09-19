@@ -11,7 +11,7 @@ For the data, we used 3 datasets with varying ratios of features to instances fr
 - Blood Transfusion Service Centre - 4 features and 748 instances
 - Parkinsons - 22 features and 197 instances
 
-To assess the predictive power and accuracy of PMM and OT-PMM, we used both MAE and RMSE.
+To assess the predictive power of PMM and OT-PMM, we used both MAE and RMSE.
 
 To simulate missing data, we defined MCAR, MAR and MNAR (quantile) functions and created 30 masks for each dataset (aiming at around 30% missing data)
 
