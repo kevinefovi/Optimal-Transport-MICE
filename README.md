@@ -13,7 +13,7 @@ For the data, we used 3 datasets with varying ratios of features to instances fr
 
 To assess the predictive power of PMM and OT-PMM, we used both MAE and RMSE.
 
-To simulate missing data, we defined MCAR, MAR and MNAR (quantile) functions and created 30 masks for each dataset (aiming at around 30% missing data)
+To simulate missing data, we defined Missing Completely at Random (MCAR), Missing at Random (MAR) and Missing not at Random (MNAR, quantile) functions and created 30 masks for each dataset (aiming at around 30% missing data)
 
 #
 
