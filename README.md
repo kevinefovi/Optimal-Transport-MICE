@@ -27,7 +27,7 @@ To simulate missing data, we defined Missing Completely at Random (MCAR), Missin
 
 For MCAR and MAR, we see small gains in accuracy with mixed stability. If the predictors don't carry useful local structure, the extra distance term in OT-PMM just adds noise without any significant upside.
 
-For MNAR, accuracy improves significantly with little to no loss in stability, especially on the breast cancer and parkinsons datasets. OT-PMM performs poorly under all 3 mechanisms for the transfusion dataset, consistent with our hypothesis that the covariate terms offers limited value in low feature settings. 
+For MNAR, accuracy improves significantly on the breast cancer and parkinsons datasets, with little to no loss in stability. OT-PMM performs poorly under all 3 mechanisms for the transfusion dataset, consistent with our hypothesis that the covariate terms offers limited value in low feature settings. 
 
 OT-PMM seems to provide substantial gains in performance over PMM on datasets with a higher number of features, especially under MNAR which is the most realistic and trickiest missing data to impute.
 
