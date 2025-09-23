@@ -1,6 +1,6 @@
 # Optimal Transport in Predictive Mean Matching
 
-The baseline MICE algorithm uses Predictive Mean Matching (PMM) to impute missing data. For each target feature, it fits a coditional model (in our case OLS) on the remaining features to generate predictions for observed rows (donors) and missing rows (recipients). For each recipient, it collects the k nearest donors (by a 1-D gap) and copies one donor’s observed value at random.
+The baseline MICE algorithm uses Predictive Mean Matching (PMM) to impute missing data. For each target feature, it fits a conditional model (in our case OLS) on the remaining features to generate predictions for observed rows (donors) and missing rows (recipients). For each recipient, it collects the k nearest donors (by a 1-D gap) and copies one donor’s observed value at random.
 
 This donor criterion collapses the covariate space into a single scalar, effectively throwing away the distribution of the covariates. In datasets with a high ratio of features to instances, this problem can worsen. Optimal Transport Predictive Mean Matching (OT-PMM) tries to address this by replacing the matching rule with a 2 part cost that blends the prediction gap with a covariate distance term, encouraging matches that are close in both prediction and covariates. The relative influence of each term is controllable by alpha and/or beta.
 
