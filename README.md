@@ -17,19 +17,15 @@ To simulate missing data, we defined Missing Completely at Random (MCAR), Missin
 
 #
 
- The following data shows the percentage improvement of OT-PMM over PMM for the ratio of means and standard deviation:
+Mean % improvement of OT-PMM over PMM, with corresponding change in standard deviation across seeds. Per seed improvements are averaged by masking mechanism
  
- <img width="699" height="600" alt="MCAR_plot" src="https://github.com/user-attachments/assets/2d0a8550-262e-45c7-8139-f6c998d518c8" />
-
- <img width="699" height="600" alt="MAR_plot" src="https://github.com/user-attachments/assets/45ba9831-aaa8-408b-aaa5-25cf23644085" />
-
- <img width="699" height="600" alt="MNAR_quant_plot" src="https://github.com/user-attachments/assets/cf5a06a8-e5bc-4fe2-a031-6d718db803c6" />
+<img width="600" height="1382" alt="fig" src="https://github.com/user-attachments/assets/4cfc1d43-ead9-46ee-8c10-c6df902e560c" />
 
 For MCAR and MAR, we see small gains in accuracy with mixed stability. If the predictors don't carry useful local structure, the extra distance term in OT-PMM just adds noise without any significant upside.
 
-For MNAR, accuracy improves significantly on the breast cancer and parkinsons datasets, with little to no loss in stability. OT-PMM performs poorly under all 3 mechanisms for the transfusion dataset, consistent with our hypothesis that the covariate terms offer limited value in low feature settings. 
+For MNAR, accuracy improves significantly on the breast cancer and parkinsons datasets, with little to no loss in stability. On the transfusion dataset, accuracy improves albeit at a loss in stability.
 
-OT-PMM provides substantial gains in performance over PMM on datasets with a higher number of features under MNAR, which is the most realistic and trickiest missing data to impute.
+OT-PMM provides substantial gains in performance over PMM on datasets with MNAR, the trickiest and most realistic missing data structure to impute.
 
 # 
 
